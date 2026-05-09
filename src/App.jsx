@@ -363,7 +363,7 @@ function App() {
       return JSON.parse(savedUsers);
     }
 
-    return [{ username: "alwin", password: "123456" }];
+    return [{ username: "alwin", password: "12345" }];
   });
   const [loggedInUser, setLoggedInUser] = useState(() => localStorage.getItem("student-login") || "");
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -394,9 +394,6 @@ function App() {
 
   return (
     <div className="app-shell" data-theme={theme}>
-      <div className="ambient ambient-one" />
-      <div className="ambient ambient-two" />
-
       <nav className="navbar">
         <Link className="brand" to="/">
           <Users size={24} />

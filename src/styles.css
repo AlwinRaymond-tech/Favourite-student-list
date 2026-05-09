@@ -79,33 +79,6 @@ button:hover:not(:disabled) {
   --shadow: rgba(0, 0, 0, 0.38);
 }
 
-.ambient {
-  border-radius: 999px;
-  filter: blur(18px);
-  opacity: 0.34;
-  pointer-events: none;
-  position: fixed;
-  z-index: -1;
-}
-
-.ambient-one {
-  animation: floatGlow 9s ease-in-out infinite;
-  background: var(--accent);
-  height: 180px;
-  left: 7%;
-  top: 18%;
-  width: 180px;
-}
-
-.ambient-two {
-  animation: floatGlow 11s ease-in-out infinite reverse;
-  background: var(--primary);
-  bottom: 8%;
-  height: 220px;
-  right: 8%;
-  width: 220px;
-}
-
 .navbar {
   align-items: center;
   backdrop-filter: blur(18px);
@@ -727,16 +700,6 @@ p {
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes floatGlow {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(24px, -22px, 0) scale(1.12);
   }
 }
 
