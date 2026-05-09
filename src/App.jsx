@@ -103,7 +103,7 @@ function LoginPage({ users, onLogin }) {
     <main className="auth-page">
       <section className="auth-card">
         <p className="eyebrow">Welcome Back</p>
-        <h1>Hey Hi</h1>
+        <h1>Hello There</h1>
         {loginFailed ? (
           <p className="auth-error">Please signup before login</p>
         ) : (
@@ -168,7 +168,7 @@ function SignupPage({ setUsers }) {
     <main className="auth-page">
       <section className="auth-card">
         <p className="eyebrow">Create Account</p>
-        <h1>Hey Hi</h1>
+        <h1>Hello There</h1>
         {error ? (
           <p className="auth-error">{error}</p>
         ) : (
@@ -394,6 +394,9 @@ function App() {
 
   return (
     <div className="app-shell" data-theme={theme}>
+      <div className="ambient ambient-one" />
+      <div className="ambient ambient-two" />
+
       <nav className="navbar">
         <Link className="brand" to="/">
           <Users size={24} />
