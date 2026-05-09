@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, NavLink, Route, Routes } from "react-router-dom";
-import { Award, Heart, Home, Mail, Palette, Sparkles, UserRound, Users, X } from "lucide-react";
+import { Link, Navigate, NavLink, Route, Routes, useNavigate } from "react-router-dom";
+import { Award, Heart, Home, LogOut, Mail, Palette, Sparkles, UserRound, Users, X } from "lucide-react";
 import { students } from "./students.js";
 import { useStudents } from "./StudentContext.jsx";
 
@@ -77,6 +77,147 @@ function StudentListPage({ onOpenProfile, onAddToast }) {
       </section>
     </main>
   );
+}
+
+function LoginPage({ users, onLogin }) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginFailed, setLoginFailed] = useState(false);
+  const navigate = useNavigate();
+
+  function checkUser() {
+    const foundUser = users.some((user) => {
+      return user.username === username.trim() && user.password === password.trim();
+    });
+
+    if (foundUser) {
+      onLogin(username.trim());
+      setLoginFailed(false);
+      navigate("/");
+    } else {
+      setLoginFailed(true);
+    }
+  }
+
+  return (
+    <main className="auth-page">
+      <section className="auth-card">
+        <p className="eyebrow">Welcome Back</p>
+        <h1>Hey Hi</h1>
+        {loginFailed ? (
+          <p className="auth-error">Please signup before login</p>
+        ) : (
+          <p>I help you manage your favourite students after you login.</p>
+        )}
+
+        <div className="auth-form">
+          <input
+            type="text"
+            name="login-username"
+            placeholder="Username"
+            value={username}
+            onChange={(event) => setUsername(event.target.value)}
+            autoComplete="off"
+          />
+          <input
+            type="password"
+            name="login-password"
+            placeholder="Password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            autoComplete="new-password"
+          />
+          <button className="primary-button" type="button" onClick={checkUser}>
+            Login
+          </button>
+          <p>
+            Don't have an account? <Link to="/signup">Sign Up</Link>
+          </p>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function SignupPage({ setUsers }) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  function addUser() {
+    if (!username.trim() || !password.trim()) {
+      setError("Please enter username and password");
+      return;
+    }
+
+    if (password.trim() !== confirmPassword.trim()) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    setUsers((currentUsers) => [
+      ...currentUsers,
+      { username: username.trim(), password: password.trim() }
+    ]);
+    navigate("/login");
+  }
+
+  return (
+    <main className="auth-page">
+      <section className="auth-card">
+        <p className="eyebrow">Create Account</p>
+        <h1>Hey Hi</h1>
+        {error ? (
+          <p className="auth-error">{error}</p>
+        ) : (
+          <p>Signup once and start building your favourite student list.</p>
+        )}
+
+        <div className="auth-form">
+          <input
+            type="text"
+            name="signup-username"
+            placeholder="Username"
+            value={username}
+            onChange={(event) => setUsername(event.target.value)}
+            autoComplete="off"
+          />
+          <input
+            type="password"
+            name="signup-password"
+            placeholder="Password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            autoComplete="new-password"
+          />
+          <input
+            type="password"
+            name="signup-confirm-password"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(event) => setConfirmPassword(event.target.value)}
+            autoComplete="new-password"
+          />
+          <button className="primary-button" type="button" onClick={addUser}>
+            Sign Up
+          </button>
+          <p>
+            Already have an account? <Link to="/login">Login</Link>
+          </p>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function ProtectedRoute({ loggedInUser, children }) {
+  if (!loggedInUser) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
 }
 
 function FavouriteStudentsPage({ onOpenProfile, onAddToast }) {
@@ -215,6 +356,16 @@ function Toast({ message }) {
 function App() {
   const { favouriteStudents } = useStudents();
   const [theme, setTheme] = useState(() => localStorage.getItem("student-theme") || "berry");
+  const [users, setUsers] = useState(() => {
+    const savedUsers = localStorage.getItem("student-users");
+
+    if (savedUsers) {
+      return JSON.parse(savedUsers);
+    }
+
+    return [{ username: "alwin", password: "123456" }];
+  });
+  const [loggedInUser, setLoggedInUser] = useState(() => localStorage.getItem("student-login") || "");
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [toastMessage, setToastMessage] = useState("");
   const toastTimer = useRef(null);
@@ -222,6 +373,18 @@ function App() {
   useEffect(() => {
     localStorage.setItem("student-theme", theme);
   }, [theme]);
+
+  useEffect(() => {
+    localStorage.setItem("student-users", JSON.stringify(users));
+  }, [users]);
+
+  useEffect(() => {
+    if (loggedInUser) {
+      localStorage.setItem("student-login", loggedInUser);
+    } else {
+      localStorage.removeItem("student-login");
+    }
+  }, [loggedInUser]);
 
   function showToast(message) {
     setToastMessage(message);
@@ -264,6 +427,12 @@ function App() {
           </div>
 
           <div className="nav-links">
+            {loggedInUser ? (
+              <span className="user-pill">
+                <UserRound size={18} />
+                {loggedInUser}
+              </span>
+            ) : null}
             <NavLink to="/" end>
               <Home size={18} />
               Students
@@ -273,18 +442,34 @@ function App() {
               Favourites
               <span className="count">{favouriteStudents.length}</span>
             </NavLink>
+            {loggedInUser ? (
+              <button className="logout-button" type="button" onClick={() => setLoggedInUser("")}>
+                <LogOut size={18} />
+                Logout
+              </button>
+            ) : null}
           </div>
         </div>
       </nav>
       
       <Routes>
+        <Route path="/login" element={<LoginPage users={users} onLogin={setLoggedInUser} />} />
+        <Route path="/signup" element={<SignupPage setUsers={setUsers} />} />
         <Route
           path="/"
-          element={<StudentListPage onOpenProfile={setSelectedStudent} onAddToast={showToast} />}
+          element={
+            <ProtectedRoute loggedInUser={loggedInUser}>
+              <StudentListPage onOpenProfile={setSelectedStudent} onAddToast={showToast} />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/favourites"
-          element={<FavouriteStudentsPage onOpenProfile={setSelectedStudent} onAddToast={showToast} />}
+          element={
+            <ProtectedRoute loggedInUser={loggedInUser}>
+              <FavouriteStudentsPage onOpenProfile={setSelectedStudent} onAddToast={showToast} />
+            </ProtectedRoute>
+          }
         />
       </Routes>
 
