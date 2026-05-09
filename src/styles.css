@@ -3,8 +3,8 @@
 }
 
 :root {
-  --bg-overlay-start: rgba(64, 4, 45, 0.32);
-  --bg-overlay-end: rgba(255, 245, 235, 0.56);
+  --bg-overlay-start: rgba(35, 12, 28, 0.5);
+  --bg-overlay-end: rgba(35, 12, 28, 0.5);
   --surface: rgba(255, 248, 252, 0.96);
   --surface-strong: #ffffff;
   --text: #25051a;
@@ -49,8 +49,8 @@ button:hover:not(:disabled) {
 }
 
 .app-shell[data-theme="ocean"] {
-  --bg-overlay-start: rgba(5, 46, 75, 0.34);
-  --bg-overlay-end: rgba(224, 242, 254, 0.62);
+  --bg-overlay-start: rgba(7, 54, 82, 0.5);
+  --bg-overlay-end: rgba(7, 54, 82, 0.5);
   --surface: rgba(240, 249, 255, 0.96);
   --text: #082f49;
   --muted: #164e63;
@@ -63,8 +63,8 @@ button:hover:not(:disabled) {
 }
 
 .app-shell[data-theme="midnight"] {
-  --bg-overlay-start: rgba(2, 6, 23, 0.7);
-  --bg-overlay-end: rgba(49, 46, 129, 0.58);
+  --bg-overlay-start: rgba(2, 6, 23, 0.72);
+  --bg-overlay-end: rgba(2, 6, 23, 0.72);
   --surface: rgba(15, 23, 42, 0.9);
   --surface-strong: #111827;
   --text: #f8fafc;
